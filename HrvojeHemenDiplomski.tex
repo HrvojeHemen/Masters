@@ -71,24 +71,76 @@
         \label{fig:unityLogo}
     \end{figure}
 
+    Unity je razvojno okruženje i pogonski sklop za igre s mogućnosti razvoja 2D, 2.5D i 3D igara.
+    Unity je nastao 2005 godine i od tada se kontinuirano raste i zauzima sve veći dio tržišta.
+
+    Velika prednost Unityja nad drugim sličnim produktima je pristupačnost i opsežna dokumentacija.
+    Pošto Unity omogućava razvoj za mobitele, Desktop platforme, web platforme, konzole te platforme virtualne realnosti,
+    vrlo je jednostavno istu igru napraviti za više platformi.
+
+    Postoji više licenci, među kojima postoji i besplatna razina.
+    Ona omogućava novim programerima igara ulazak u taj svijet, te oni besplatno mogu vidjeti je li to za njih.
+
 
 
     \chapter{Teorijska podloga}\label{ch:teorijska-podloga}
 
     \section{Pristupi računalnoj simulaciji fluida}\label{sec:pristupi-racunalnoj-simulaciji-fluida}
 
+    Kada pričamo o simulaciji fluida, najčešće mislimo na SPH metodu koju ovaj rad obrađuje, no postoji još mnogo
+    različitih pristupa simulaciji fluida.
+    Većina ih koristi čestice te simulira fluid nad njima, no neke koriste polja te pomoću njega računaju vizualiziraju čestice.
+
+    \subsection{Simulacije bazirane na česticama}\label{subsec:simulacije-bazirane-na-cesticama}
+
+    Simulacije bazirane na česticama su najintuitivnije.
+    Svaka čestica predstavlja jednu česticu vode, te sadrži njena svojstva poput mase, brzine i vektora smjera kretanja.
+    Kasnije se izračunavaju među-čestične sile poput tlaka i gustoće te se pomoću njih određuju nova svojstva čestica u
+    sljedećem koraku simulacije te se to ponavlja.
+
+    Najpoznatije simulacije ovog tipa su SPH koje će biti obrađeno zasebno, te DEM - Metoda diskretnih elemenata.
+
+    DEM\cite{DEMmethod} metoda je većinski korištena za simulaciju građevinskog materijala poput piljevine ili pijeska.
+    Ona uzima u obzir međučestične sile poput trenja, elastičnosti, i stavlja velik naglasak na Newtonove zakone.
+    Najčešće se koristi u rudarskom inžinjerstvu, no postoje i primjene u farmaceutskoj industriji.
+
+    \newpage
+    \subsection{Simulacije bazirane na 2D polju}\label{subsec:simulacije-bazirane-na-2d-polju}
+
+    Simulacije bazirane na 2D polju ne koriste čestice kao prijašnje metode, nego koriste 2D polje, u koje spremaju
+    svojstva čestica koje bi se nalazile u ćeliji tog polja.
+    One se kao i ostale simulacije izvode korak po korak.
+    Ako želimo veliku simulaciju, njena složenost raste kvadratno, pa ove simulacije nisu prigodne za velike površine,
+    baš zbog te velike računske složenosti.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/gridBasedParticleBased}
+        \caption{
+            Grid based, Particle based simulation \cite{gridBasedParticleBased}
+        }
+        \label{fig:gridBasedParticleBased}
+    \end{figure}
+
     \section{SPH metoda}\label{sec:sph-metoda}
+
+    \subsection{Općenito o metodi}\label{subsec:opcenito-o-metodi}
+
+    SPH metoda je računska metoda koja se koristi za simulaciju fluida.
+    Ona je simulacija bazirana na česticama, te njihova svojstva koristi za računanje istih iz koraka u korak.
+    Ona ne zahtjeva 2D polje, što je velika prednost, jer može simulirati fluid u složenim i nepravilnim prostorima.
+    Njena složenost gledana s obzirom na broj čestica je puno manja nego složenost simulacija koje koriste 2D polje kada je gustoća jednaka.
 
 
     \chapter{Programska implementacija}\label{ch:programska-implementacija}
 
     \section{Osnove Unity okruženja}\label{sec:osnove-unity-okruzenja}
     \section{Osnove Unity fizičkog simulatora}\label{sec:osnove-unity-fizickog-simulatora}
-    \section{čestica}\label{sec:cestica}
-    \section{gustoća}\label{sec:gustoca}
-    \section{pritisak}\label{sec:pritisak}
-    \section{viskoza}\label{sec:viskoza}
-    \section{rezultantna sila}\label{sec:rezultantna-sila}
+    \section{Čestica}\label{sec:cestica}
+    \section{Gustoća}\label{sec:gustoca}
+    \section{Pritisak}\label{sec:pritisak}
+    \section{Viskoza}\label{sec:viskoza}
+    \section{Rezultantna sila}\label{sec:rezultantna-sila}
 
 
     \bibliography{literatura}
