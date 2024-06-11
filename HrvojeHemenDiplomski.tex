@@ -4,6 +4,9 @@
 \usepackage{listings}
 \usepackage[outputdir=out]{minted}
 
+\newcommand{\paragraphnewline}[1]{\paragraph{#1}\mbox{}\\}
+
+
 \title{Dynamic fluid visualization using smoothed particle hydrodynamics method}
 \naslov{Vizualizacija dinamike fluida metodom hidrodinamike zaglađujućih čestica}
 \brojrada{542}
@@ -126,10 +129,51 @@
 
     \subsection{Općenito o metodi}\label{subsec:opcenito-o-metodi}
 
-    SPH metoda je računska metoda koja se koristi za simulaciju fluida.
+    SPH\cite{SPHmethod} metoda je računska metoda koja se koristi za simulaciju fluida.
     Ona je simulacija bazirana na česticama, te njihova svojstva koristi za računanje istih iz koraka u korak.
     Ona ne zahtjeva 2D polje, što je velika prednost, jer može simulirati fluid u složenim i nepravilnim prostorima.
     Njena složenost gledana s obzirom na broj čestica je puno manja nego složenost simulacija koje koriste 2D polje kada je gustoća jednaka.
+
+    \newpage
+    \subsection{Koraci simulacije}\label{subsec:koraci-simulacije}
+
+    \paragraphnewline{Inicijalizacija simulacije}
+    Na samom početku simulacije potrebno je definirati parametre simulacije poput jačine viskoze, međučestično odbijanje i slično.
+
+    \paragraphnewline{Traženje susjeda}
+
+    Prvi ``pravi`` korak simulacije je traženje susjeda.
+    Vrlo je važno znati susjede kako bi se na čestice mogle primjeniti sile koje ovise o udaljenosti od drugih čestica poput viskoznosti i pritiska.
+    Najčešći pristup traženju susjeda su pretraga pomoću 2D polja, u kojem svaku česticu na početku simulacije spremimo u polje, te gledamo bliskost čestica koje su i bliskim poljima radi bržeg iteriranja.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.3]{images/Uniform-grid-searching-method}
+        \caption{
+            Uniform grid searching method \cite{uniformGridSearchingMethod}
+        }
+        \label{fig:uniformGridSearchingMethod}
+    \end{figure}
+
+    Drugi česti pristup ovome je pristup pomoću stabla, gdje se čestice spremaju u stablastu strukturu podataka i susjedi se lako traže spuštajući se niz nju.
+    Susjedi se također mogu tražiti tako da se za svaku česticu ispituje udaljenost od svake druge, no složenost toga je kvadratna, te je jednostavno previše spora.
+
+    % TODO dodat sliku stabla
+
+    \newpage
+    \paragraphnewline{Računanje i primjena međučestičnih sila}
+
+    Nakon pronalaska susjeda slijedi korak u kojem se računaju međučestične sile.
+    Prvo se računa gustoća, a zatim pritisak i viskoza.
+
+    Gustoća je bitna kako bi kasnije izračunali pritisak koji tjera bliske čestice jedne od drugih.
+    Viskoza je suprotna pritisku, ona želi držati čestice na okupu.
+    Zajedno pritisak i viskoza djeluju tako da pritisak tjera čestice jedne iz drugih kako nebi se preklapale, a
+    viskoza vuće čestice jedne prema drugima kako bi se micale u jednoj velikoj nakupini.
+
+
+    % TODO dodat slike tih sila
+    \paragraphnewline{Upravljanje rubnim uvjetima i sudarima}
 
 
     \chapter{Programska implementacija}\label{ch:programska-implementacija}
