@@ -155,21 +155,50 @@
         \label{fig:uniformGridSearchingMethod}
     \end{figure}
 
+    \newpage
     Drugi česti pristup ovome je pristup pomoću stabla, gdje se čestice spremaju u stablastu strukturu podataka i susjedi se lako traže spuštajući se niz nju.
     Susjedi se također mogu tražiti tako da se za svaku česticu ispituje udaljenost od svake druge, no složenost toga je kvadratna, te je jednostavno previše spora.
 
-    % TODO dodat sliku stabla
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.3]{images/kdtree}
+        \caption{
+            K-D stablo \cite{kdTree}
+        }
+        \label{fig:kdTree}
+    \end{figure}
 
-    \newpage
     \paragraphnewline{Računanje i primjena međučestičnih sila}
 
     Nakon pronalaska susjeda slijedi korak u kojem se računaju međučestične sile.
-    Prvo se računa gustoća, a zatim pritisak i viskoza.
+    Ovo je najvažniji korak jer upravo ove sile su te koje tjeraju čestice da se gibaju poput vode.
+    Čestice ne smiju biti jedne u drugima, ali se svejedno moraju kretati zajedno i više čestica se mora ponašati složno.
+    Najbitnije su sile sila pritiska, i sila viskoze.
 
-    Gustoća je bitna kako bi kasnije izračunali pritisak koji tjera bliske čestice jedne od drugih.
-    Viskoza je suprotna pritisku, ona želi držati čestice na okupu.
-    Zajedno pritisak i viskoza djeluju tako da pritisak tjera čestice jedne iz drugih kako nebi se preklapale, a
-    viskoza vuće čestice jedne prema drugima kako bi se micale u jednoj velikoj nakupini.
+    Prvo se računa gustoća, a zatim pomoću nje pritisak i onda nakon viskoza.
+
+    Pritisak je bitan jer on tjera čestice jedne iz drugih kako nebi zapele jedna u drugu.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=1]{images/pressureForce}
+        \caption{
+            Sile pritiska
+        }
+        \label{fig:pressureForce}
+    \end{figure}
+
+    Viskoza je suprotna pritisku, ona želi držati čestice na okupu tako da vuće čestice jedne prema drugima kako bi se micale u jednoj velikoj nakupini.
+    Što je viskoza jača, fluid koji simuliramo bit će ``tvrđi`` i sve više ličiti na neku krutinu, jer će unutarnja sila biti toliko jaka da će se vanjske sile
+    poput gravitacije moći zanemariti.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=1]{images/viscoseForce}
+        \caption{
+            Sile viskoze
+        }
+        \label{fig:viscoseForce}
+    \end{figure}
+
 
 
     % TODO dodat slike tih sila
