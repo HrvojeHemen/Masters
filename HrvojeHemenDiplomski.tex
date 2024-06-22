@@ -171,8 +171,7 @@
         \item \textbf{Prednosti:} Jedna od glavnih prednosti SPH metode je njena sposobnost da simulira fluide u složenim geometrijama i nepravilnim prostorima.
         Budući da ne koristi 2D polje, SPH metoda je fleksibilnija i može se lako prilagoditi različitim vrstama problema.
         Također, njena složenost u odnosu na broj čestica je manja nego kod metoda koje koriste 2D polje, posebno kada je gustoća čestica visoka.
-        \item \textbf{Nedostaci:} Glavni nedostatak SPH metode je potreba za velikim brojem čestica kako bi se postigla visoka preciznost simulacije, što može povećati računalne zahtjeve.
-        Također, postizanje stabilnosti simulacije može biti izazovno, posebno kod simulacije viskoznih i turbulentnih tokova.
+        \item \textbf{Nedostaci:} Glavni nedostatak SPH metode je potreba za velikim brojem čestica kako bi se postigla visoka preciznost simulacije, što može povećati zahtjevnost simulacije i dodatno ju usporiti.
     \end{itemize}
 
     \newpage
@@ -180,13 +179,18 @@
     \subsection{Koraci simulacije}\label{subsec:koraci-simulacije}
 
     \paragraphnewline{Inicijalizacija simulacije}
-    Na samom početku simulacije potrebno je definirati parametre simulacije poput jačine viskoze, međučestično odbijanje i slično.
+    Na samom početku simulacije potrebno je definirati osnovne parametre koji će utjecati na ponašanje simulacije.
+    Ovi parametri uključuju jačinu viskoznosti, koja određuje otpor tekućine prema promjeni oblika, te koeficijente međučestičnog odbijanja i privlačenja, koji utječu na način na koji se čestice međusobno odbijaju ili privlače.
+    Osim toga, potrebno je definirati početne uvjete simulacije, kao što su početne pozicije i brzine čestica, kao i rubne uvjete koji definiraju granice simulacijskog prostora.
+    Također, određuju se fizičke konstante kao što su gravitacija i koeficijenti pritiska, koji će biti korišteni u daljnjim koracima simulacije.
 
     \paragraphnewline{Traženje susjeda}
-
-    Prvi ``pravi`` korak simulacije je traženje susjeda.
-    Vrlo je važno znati susjede kako bi se na čestice mogle primjeniti sile koje ovise o udaljenosti od drugih čestica poput viskoznosti i pritiska.
-    Najčešći pristup traženju susjeda su pretraga pomoću 2D polja, u kojem svaku česticu na početku simulacije spremimo u polje, te gledamo bliskost čestica koje su i bliskim poljima radi bržeg iteriranja.
+    Prvi ``pravi`` korak simulacije je traženje susjeda za svaku česticu.
+    Susjedi su čestice koje se nalaze unutar određenog radijusa od ciljne čestice, i vrlo je važno znati njihove pozicije kako bi se na čestice mogle primijeniti sile koje ovise o udaljenosti, poput viskoznosti i pritiska.
+    Najčešći pristup traženju susjeda je korištenje uniformne mreže ili 2D polja, gdje se svaka čestica na početku simulacije smješta u odgovarajuću ćeliju mreže.
+    Kada se traže susjedi, provjeravaju se čestice u bliskim ćelijama mreže, što omogućava brzo i efikasno pretraživanje.
+    Ova metoda značajno smanjuje broj potrebnih provjera udaljenosti između čestica, čime se optimizira cijeli proces simulacije.
+    Uniformna mreža omogućava jednostavno indeksiranje i brzi pristup podacima, što je ključno za izvođenje simulacija u realnom vremenu.
 
     \begin{figure}[H]
         \centering
@@ -197,9 +201,10 @@
         \label{fig:uniformGridSearchingMethod}
     \end{figure}
 
-    \newpage
-    Drugi česti pristup ovome je pristup pomoću stabla, gdje se čestice spremaju u stablastu strukturu podataka i susjedi se lako traže spuštajući se niz nju.
-    Susjedi se također mogu tražiti tako da se za svaku česticu ispituje udaljenost od svake druge, no složenost toga je kvadratna, te je jednostavno previše spora.
+    Drugi česti pristup traženju susjeda je korištenje stablastih struktura podataka, kao što su k-d stabla ili oktalna stabla.
+    U ovom pristupu, čestice se organiziraju u hijerarhijsku strukturu stabla, gdje svaka čvor stabla predstavlja podskup čestica.
+    Kada se traže susjedi za određenu česticu, pretraga se provodi spuštanjem niz stablo, čime se brzo identificiraju potencijalni susjedi.
+    Ovaj pristup može biti vrlo učinkovit za velike skupove čestica jer smanjuje broj potrebnih provjera udaljenosti.
 
     \begin{figure}[H]
         \centering
@@ -210,12 +215,17 @@
         \label{fig:kdTree}
     \end{figure}
 
+    Najjednostavniji, ali i najmanje efikasan pristup traženju susjeda je brute-force metoda, gdje se za svaku česticu provjerava udaljenost od svake druge čestice.
+    Ovaj pristup ima kvadratnu složenost, što znači da se broj provjera eksponencijalno povećava s brojem čestica.
+    Zbog toga je ovaj pristup previše spor za praktičnu upotrebu u simulacijama s velikim brojem čestica.
+
+
     \paragraphnewline{Računanje i primjena međučestičnih sila}
 
-    Nakon pronalaska susjeda slijedi korak u kojem se računaju međučestične sile.
-    Ovo je najvažniji korak jer upravo ove sile su te koje tjeraju čestice da se gibaju poput vode.
-    Čestice ne smiju biti jedne u drugima, ali se svejedno moraju kretati zajedno i više čestica se mora ponašati složno.
-    Najbitnije su sile sila pritiska, i sila viskoze.
+    Nakon pronalaska susjeda slijedi ključni korak u kojem se računaju međučestične sile.
+    Ovo je najvažniji korak jer upravo ove sile su one koje pokreću čestice da se gibaju poput vode.
+    Čestice ne smiju biti unutar jedne druge, ali se svejedno moraju kretati zajedno, a skupina čestica mora se ponašati kao kohezivna jedinica.
+    Najbitnije sile u ovoj fazi su sile pritiska i sile viskoznosti.
 
     Prvo se računa gustoća, a zatim pomoću nje pritisak i onda nakon viskoza.
 
@@ -230,9 +240,9 @@
     \end{figure}
 
     \newpage
-    Viskoza je suprotna pritisku, ona želi držati čestice na okupu tako da vuće čestice jedne prema drugima kako bi se micale u jednoj velikoj nakupini.
-    Što je viskoza jača, fluid koji simuliramo bit će ``tvrđi`` i sve više ličiti na neku krutinu, jer će unutarnja sila biti toliko jaka da će se vanjske sile
-    poput gravitacije moći zanemariti.
+    S druge strane, viskoznost je sila koja drži čestice na okupu.
+    Viskoznost povlači čestice jedne prema drugima, omogućujući im da se kreću kao jedinstvena masa.
+    Što je viskoznost jača, fluid koji simuliramo bit će ``tvrđi`` i više će nalikovati krutini, jer će unutarnje sile biti toliko jake da će se vanjske sile poput gravitacije moći zanemariti.
     \begin{figure}[H]
         \centering
         \includegraphics[scale=1]{images/viscoseForce}
@@ -242,19 +252,129 @@
         \label{fig:viscoseForce}
     \end{figure}
 
+    Nakon što su sile pritiska i viskoznosti izračunate, primjenjuju se na svaku česticu kako bi se dobila nova brzina i položaj.
+    Konačne pozicije i brzine čestica se ažuriraju na temelju ovih sila, omogućujući simulaciji da napreduje kroz vrijeme.
 
-    % TODO dodat slike tih sila
+    Balansiranje ovih sila ključno je za postizanje realističnih simulacija fluida koje odgovaraju stvarnom ponašanju materijala.
+    Kada su ove sile pravilno izračunate i primijenjene, simulacija će prikazivati prirodno gibanje tekućine, s česticama koje se pravilno međusobno odbijaju i privlače, oponašajući stvarno ponašanje vode ili drugih tekućina.
+
     \paragraphnewline{Upravljanje rubnim uvjetima i sudarima}
+    Upravljanje rubnim uvjetima i sudarima predstavlja kritičan aspekt svake simulacije fluida, uključujući one koje koriste SPH metodu.
+    Rubni uvjeti definiraju kako se fluid ponaša na granicama simulacijskog prostora, dok upravljanje sudarima osigurava realistične interakcije između fluida i čvrstih objekata ili granica.
+
+    \begin{itemize}
+        \item \textbf{Rubni uvjeti:} Postoji nekoliko vrsta rubnih uvjeta koji se mogu primijeniti u SPH simulacijama, uključujući:
+        \begin{itemize}
+            \item \textit{Dirichletovi rubni uvjeti:} Ovi uvjeti specificiraju vrijednosti funkcije (npr. brzine ili gustoće) na granicama simulacijskog prostora. Primjerice, u simulaciji fluida, brzina fluida na zidovima posude može biti postavljena na nulu kako bi se simuliralo stanje mirovanja.
+            \item \textit{Neumannovi rubni uvjeti:} Ovi uvjeti specificiraju vrijednosti derivacija funkcije na granicama. U kontekstu simulacije fluida, ovo može značiti postavljanje gradijenta brzine ili tlaka na određene vrijednosti na granicama.
+            \item \textit{Periodični rubni uvjeti:} Ovi uvjeti omogućuju česticama koje napuste jednu stranu simulacijskog prostora da se ponovno pojave na suprotnoj strani, stvarajući efekt beskonačnog prostora.
+        \end{itemize}
+        Pravilno postavljanje rubnih uvjeta ključno je za održavanje stabilnosti i realizma simulacije.
+        Primjerice, u simulacijama gdje fluid dodiruje čvrste zidove, potrebno je osigurati da fluid ne procuri (``clippa``) kroz zidove i da se ponaša u skladu s očekivanim fizikalnim zakonima.
+
+        \item \textbf{Upravljanje sudarima:} U simulacijama fluida, sudari mogu nastati između čestica fluida, kao i između čestica fluida i čvrstih objekata. Postoji nekoliko metoda za upravljanje sudarima:
+        \begin{itemize}
+            \item \textit{Phantom particles (fantomske čestice):} Ova metoda uključuje postavljanje dodatnih čestica duž granica čvrstih objekata. Fantomske čestice služe za simulaciju sile odbijanja, osiguravajući da čestice fluida ne prodiru kroz granice.
+            \item \textit{Boundary handling (upravljanje granicama):} Ova metoda koristi posebne algoritme za detekciju i odgovor na sudare čestica fluida s granicama simulacijskog prostora. Na primjer, može se koristiti refleksija brzina kako bi se simulirao odbijanje fluida od zidova.
+            \item \textit{Friction and adhesion (trenje i adhezija):} Ove sile igraju važnu ulogu u simulaciji interakcija između fluida i čvrstih površina. Trenje može smanjiti brzinu fluida pri kontaktu sa zidom, dok adhezija može uzrokovati da fluid ``prianja`` uz površine, što je važno za simulaciju efekata poput mokrih površina.
+        \end{itemize}
+
+        Upravljanje rubnim uvjetima i sudarima zahtijeva balansiranje između preciznosti i računalne efikasnosti.
+        Pravilna implementacija ovih aspekata ključna je za stvaranje realističnih i stabilnih simulacija fluida koje se mogu koristiti u različitim aplikacijama, od računalne grafike do inženjerskih simulacija.
+
+
+    \end{itemize}
 
 
     \chapter{Programska implementacija}\label{ch:programska-implementacija}
 
+    U ovom poglavlju detaljno će biti opisani programske koraci implementacije SPH simulacije fluida koristeći Unity i C\#.
+    Fokus će biti na osnovama Unity okruženja i Unity fizičkog simulatora, što će omogućiti razumijevanje integracije SPH metode u Unity okruženje.
 
     \section{Osnove Unity okruženja}\label{sec:osnove-unity-okruzenja}
 
+    Unity je moćan razvojni alat koji omogućava stvaranje igara i simulacija u 2D, 2.5D i 3D okruženjima. Njegova fleksibilnost i pristupačnost čine ga idealnim izborom za razvoj složenih fizikalnih simulacija kao što je SPH metoda za simulaciju fluida.
+
+    \subsection{Unity Editor}\label{subsec:unity-editor}
+    Unity Editor je glavno razvojno okruženje koje omogućava korisnicima da dizajniraju, razvijaju i testiraju svoje aplikacije.
+    Editor se sastoji od nekoliko ključnih komponenti:
+    \begin{itemize}
+        \item \textbf{Scene View:} Omogućava pregled i uređivanje scena igre.
+        U ovom prikazu mogu se postavljati objekti, prilagođavati njihove pozicije, rotacije i veličine, te dodavati komponente.
+        \item \textbf{Game View:} Omogućava pregled igre onako kako će je korisnik vidjeti kada je pokrene.
+        Ovaj prikaz se koristi za testiranje i debugiranje.
+        \item \textbf{Hierarchy Window:} Prikazuje sve objekte u sceni u hijerarhijskom prikazu.
+        Ovdje se mogu organizirati objekti, stvarati roditeljsko-dječji odnose i upravljati strukturom scene.
+        \item \textbf{Inspector Window:} Omogućava pregled i uređivanje svojstava odabranih objekata.
+        Ovdje se mogu dodavati komponente te mijenjati vrijednosti postojećih komponenti i skripti.
+        \item \textbf{Project Window:} Prikazuje sve resurse projekta, uključujući skripte, modele, teksture i zvukove.
+        Ovdje se može upravljati resursima vašeg projekta.
+    \end{itemize}
+
+    \subsection{Komponente i GameObjecti}\label{subsec:komponente-i-gameobjecti}
+    U Unityju, svaki objekt u sceni je GameObject.
+    GameObjecti mogu imati različite komponente koje određuju njihovo ponašanje i izgled.
+    Neke od ključnih komponenti uključuju:
+    \begin{itemize}
+        \item \textbf{Transform:} Svaki GameObject ima komponentu Transform koja pohranjuje informacije o poziciji, rotaciji i skali objekta.
+        \item \textbf{Rigidbody:} Komponenta koja omogućava fizičku simulaciju objekta, uključujući gravitaciju, sile i sudare.
+        \item \textbf{Collider:} Komponenta koja definira oblik objekta za detekciju sudara.
+        Postoje različite vrste collidera, uključujući Box Collider, Sphere Collider i Mesh Collider, ovisno o objektu na koji stavljamo collider taj tip ćemo koristiti.
+        \item \textbf{Script:} Komponente koje dodaju prilagođeno ponašanje objektima koristeći C\# skripte.
+    \end{itemize}
+
+    \subsection{Skripte u C\#}\label{subsec:skripte-u-c}
+    Unity koristi C\# kao glavni programski jezik za razvoj skripti.
+    Skripte omogućavaju programerima da definiraju prilagođeno ponašanje za GameObjecte.
+    Neke ključne značajke skripti u Unityju uključuju:
+    \begin{itemize}
+        \item \textbf{Monobehaviour:} Svi skriptni objekti koji žele biti povezani s GameObjectima trebaju naslijediti klasu Monobehaviour.
+        Ova klasa omogućava pristup osnovnim metodama životnog ciklusa kao što su Start, Update, FixedUpdate i LateUpdate, koje se zovu u određeno vrijeme ciklusa.
+        \item \textbf{Metode životnog ciklusa:} \textit{Start} se poziva jednom kada se skripta prvi put pokrene, \textit{Update} se poziva jednom po taktu, \textit{FixedUpdate} se poziva na fiksnim vremenskim intervalima i koristi se za fiziku, dok se \textit{LateUpdate} poziva nakon svih Update metoda i koristi se za finaliziranje kretanja objekata.
+        \item \textbf{Upravljanje komponentama:} Skripte mogu dodavati, uklanjati i mijenjati komponente GameObjecta, omogućavajući dinamičko ponašanje tijekom igre.
+    \end{itemize}
 
     \section{Osnove Unity fizičkog simulatora}\label{sec:osnove-unity-fizickog-simulatora}
 
+    Unity fizički simulator omogućava realističnu simulaciju fizikalnih interakcija među objektima.
+    Ovaj simulator koristi komponente kao što su Rigidbody i Collider za upravljanje fizikalnim svojstvima objekata i detekciju sudara.
+
+    \subsection{Rigidbody komponenta}\label{subsec:rigidbody-komponenta}
+    Rigidbody komponenta dodaje fizikalna svojstva GameObjectu, omogućavajući mu da reagira na gravitaciju, sile i sudare.
+    Ključne postavke Rigidbody komponente uključuju:
+    \begin{itemize}
+        \item \textbf{Mass:} Masa objekta koja utječe na to kako se objekt ponaša pod utjecajem sila.
+        \item \textbf{Drag:} Otpornost na kretanje koja usporava objekt.
+        \item \textbf{Angular Drag:} Otpornost na rotaciju.
+        \item \textbf{Use Gravity:} Opcija koja određuje hoće li objekt biti pod utjecajem Unityjevog gravitacijskog simulatora.
+        \item \textbf{Is Kinematic:} Ako je omogućeno, objekt neće biti pod utjecajem fizikalnih sila, već će se njime upravljati isključivo putem skripti.
+    \end{itemize}
+
+    \subsection{Collider komponenta}\label{subsec:collider-komponenta}
+    Collider komponenta definira oblik objekta za detekciju sudara.
+    Postoji nekoliko vrsta collidera koje ćemo koristiti ovisno o izgledu objekta ili slučaja korištenja u kojem se nalazimo:
+    \begin{itemize}
+        \item \textbf{Box Collider:} Pravokutni collider koji definira objekt kao kutiju, Kutija u nekoj igri.
+        \item \textbf{Sphere Collider:} Kuglasti collider koji definira objekt kao sferu, Lopta u nogometnoj igri.
+        \item \textbf{Capsule Collider:} Collider u obliku kapsule, Igrač u pucačkim igrama.
+        \item \textbf{Mesh Collider:} Collider koji koristi mrežu (mesh) za definiranje složenih oblika.
+    \end{itemize}
+
+    Collideri omogućuju detekciju sudara i interakciju među objektima.
+    Kada se dva collidera sudare, Unity fizički simulator izračunava reakcije temeljem fizikalnih svojstava objekata.
+
+    \subsection{Simulacija fluida u Unityju}\label{subsec:simulacija-fluida-u-unityju}
+    Za implementaciju SPH metode za simulaciju fluida u Unityju, potrebno je koristiti prilagođene skripte koje definiraju ponašanje čestica fluida.
+    Ključni koraci uključuju:
+    \begin{itemize}
+        \item \textbf{Inicijalizacija čestica:} Postavljanje početnih pozicija, brzina i svojstava čestica.
+        \item \textbf{Traženje susjeda:} Korištenje algoritama za brzo traženje susjeda unutar određenog radijusa.
+        \item \textbf{Izračun međučestičnih sila:} Primjena pritiska, viskoznosti i drugih sila na temelju udaljenosti među česticama.
+        \item \textbf{Ažuriranje položaja:} Korištenje numeričkih metoda za integraciju i ažuriranje položaja i brzina čestica kroz vrijeme.
+        \item \textbf{Upravljanje sudarima:} Implementacija algoritama za detekciju i odgovor na sudare između čestica i s rubnim uvjetima.
+    \end{itemize}
+
+    Ove osnove Unity okruženja i fizičkog simulatora postavljaju temelje za razumijevanje kako implementirati kompleksne fizikalne simulacije poput SPH metode. Daljnji koraci uključuju detaljnu implementaciju svakog od ovih aspekata kako bi se postigla realistična simulacija fluida.
 
     \section{Čestica}\label{sec:cestica}
 
