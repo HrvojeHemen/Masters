@@ -23,13 +23,17 @@
     \mainmatter
     \tableofcontents
 % TEKST RADA
+
+
     \chapter{Uvod}\label{ch:uvod}
+
 
     \section{Cilj rada}\label{sec:cilj-rada}
 
     Cilj ovog rada bio je napraviti realnu simulaciju dinamike fluida.
     Korištena metoda bila je metoda hidrodinamike zaglađujućih čestica (SPH).
     Inspiracija za ovaj rad bio je jedan YouTube video Sebastiana Laguea koji govori o simulaciji vode u Unityju.
+
 
     \section{Ukratko o radu}\label{sec:ukratko-o-radu}
 
@@ -39,6 +43,7 @@
 
 
     \chapter{Tehnologije}\label{ch:tehnologije}
+
 
     \section{C\#}\label{sec:c}
 
@@ -51,18 +56,28 @@
         \label{fig:cSharpLogo}
     \end{figure}
 
-    C\# je objektno orijentirani programski jezik visoke razine.
-    Nastao je ranih 2000-ih zbog potrebe za objektno orijentiranim jezikom sintakse slične C jeziku.
-    Najvažni ciljevi njegovog razvoja bili su jednostavnost, stroga tipiziranost,
-    laka prijenosnost na različite operacijske sustave i mala potrošnja računalnih resursa.
+    C\# ("C-sharp") je objektno orijentirani programski jezik visoke razine razvijen od strane Microsofta.
+    Jezik je nastao ranih 2000-ih kao dio .NET inicijative, s ciljem da kombinira računalnu snagu C++ s jednostavnošću i sigurnošću Jave.
 
-    Sintaksa je vrlo slična Javinoj, jer svaka naredba treba završiti sa točka-zarezom \";\".
-    Također, dijelovi koda omeđeni su vitičastim zagradama, koje razdvajaju kod u Klase i Metode.
-    Važna razlika C\# i Jave je to što C\# omogućava preopterećenje osnovnih operacija, dakle možemo reći klasi da kada
-    upotrijebimo znak plus onda radi nešto drugo, a ne matematičko dodavanje.
+    \begin{itemize}
+        \item \textbf{Razvoj i povijest:} C\# je prvi put predstavljen 2000\. godine i brzo je postao popularan zbog svoje sličnosti s C i C++ jezicima,
+        kao i zbog svoje integracije s .NET frameworkom.
+        Jezik je dizajniran kako bi bio jednostavan za učenje, strogo tipiziran i prijenosan na različite operacijske sustave.
+        \item \textbf{Sintaksa i struktura:} C\# sintaksa je vrlo slična onoj u Javi, gdje svaka naredba završava sa točka-zarezom (\texttt{;}).
+        Kod je organiziran u klase i metode, a dijelovi koda su omeđeni vitičastim zagradama (\{\}).
+        Jedna od ključnih razlika između C\# i Jave je mogućnost preopterećenja osnovnih operacija u C\#.
+        Na primjer, možete definirati kako se operator \texttt{+} ponaša za prilagođene klase.
+        \item \textbf{Prednosti i upotreba:} C\# je vrlo moćan jezik s mnogim značajkama kao što su LINQ (Language Integrated Query),
+        async/await za jednostavno upravljanje asinkronim operacijama, i podrška za razne paradigme programiranja uključujući objektno orijentirano,
+        funkcionalno i imperativno programiranje.
+        \item \textbf{Integracija s Visual Studio:} C\# je potpuno integriran s Visual Studio, jednim od najmoćnijih razvojnih okruženja, što omogućava brzi razvoj, testiranje i implementaciju aplikacija.
+        \item \textbf{Ekosustav i knjižice:} C\# ima bogat ekosustav knjižica kao što su ASP.NET za web razvoj, Xamarin za mobilne aplikacije, te Unity za razvoj igara.
+    \end{itemize}
 
 
     \newpage
+
+
     \section{Unity}\label{sec:unity}
 
     \begin{figure}[H]
@@ -74,47 +89,62 @@
         \label{fig:unityLogo}
     \end{figure}
 
-    Unity je razvojno okruženje i pogonski sklop za igre s mogućnosti razvoja 2D, 2.5D i 3D igara.
-    Unity je nastao 2005 godine i od tada se kontinuirano raste i zauzima sve veći dio tržišta.
+    Unity je razvojno okruženje i pogonski sklop za igre koje omogućava razvoj 2D, 2.5D i 3D igara.
+    Od svog nastanka 2005\. godine, Unity se kontinuirano razvija i postaje jedan od najpopularnijih alata za razvoj igara na tržištu.
 
-    Velika prednost Unityja nad drugim sličnim produktima je pristupačnost i opsežna dokumentacija.
-    Pošto Unity omogućava razvoj za mobitele, Desktop platforme, web platforme, konzole te platforme virtualne realnosti,
-    vrlo je jednostavno istu igru napraviti za više platformi.
-
-    Postoji više licenci, među kojima postoji i besplatna razina.
-    Ona omogućava novim programerima igara ulazak u taj svijet, te oni besplatno mogu vidjeti je li to za njih.
-
+    \begin{itemize}
+        \item \textbf{Razvoj i povijest:} Unity je lansiran 2005.
+        godine s ciljem da olakša razvoj igara, pružajući pristupačne alate i dokumentaciju za programere svih razina vještina.
+        Od tada, Unity je narastao i zauzeo značajan udio na tržištu razvoja igara.
+        \item \textbf{Platforme i podrška:} Jedna od najvećih prednosti Unityja je njegova sposobnost razvoja za različite platforme, uključujući mobilne uređaje, desktop, web, konzole i virtualnu stvarnost.
+        To omogućava programerima da razvijaju igre koje mogu biti lako prenesene i distribuirane na više platformi.
+        \item \textbf{Licenciranje i pristupačnost:} Unity nudi nekoliko razina licenci, uključujući besplatnu verziju koja omogućava novim programerima ulazak u svijet razvoja igara.
+        Besplatna verzija je opsežna i omogućava programerima da istraže sve značajke Unityja bez početnih troškova.
+        \item \textbf{Dokumentacija i zajednica:} Unity je poznat po svojoj opsežnoj dokumentaciji i aktivnoj zajednici.
+        Mnogi resursi, kao što su forumi, vodiči, tečajevi i online podrška, dostupni su kako bi pomogli programerima da brzo nauče i rješavaju probleme.
+        \item \textbf{Alati i integracija:} Unity nudi širok spektar alata za razvoj, uključujući svoj IDE, alate za animaciju, nativni fizički simulator, te podršku za nadogradnje razvojene od strane drugih ljudi.
+        \item \textbf{Renderiranje i grafika:} Unity koristi napredne tehnike renderiranja i grafičke mogućnosti, uključujući podršku za High Definition Render Pipeline (HDRP) i Universal Render Pipeline (URP), što omogućava visoku kvalitetu vizualnih efekata i performansi na raznim uređajima.
+    \end{itemize}
 
 
     \chapter{Teorijska podloga}\label{ch:teorijska-podloga}
 
+
     \section{Pristupi računalnoj simulaciji fluida}\label{sec:pristupi-racunalnoj-simulaciji-fluida}
 
-    Kada pričamo o simulaciji fluida, najčešće mislimo na SPH metodu koju ovaj rad obrađuje, no postoji još mnogo
-    različitih pristupa simulaciji fluida.
-    Većina ih koristi čestice te simulira fluid nad njima, no neke koriste polja te pomoću njega računaju vizualiziraju čestice.
+    Kada govorimo o simulaciji fluida, postoji nekoliko različitih pristupa koji se koriste u računalnim znanostima i inženjerstvu.
+    Ovaj rad se fokusira na SPH (Smoothed Particle Hydrodynamics) metodu, no važno je razumjeti širi spektar tehnika koje su dostupne i njihove primjene.
+    U ovom poglavlju, raspravit ćemo o najvažnijim metodama simulacije fluida, njihovim karakteristikama, prednostima i nedostacima.
 
     \subsection{Simulacije bazirane na česticama}\label{subsec:simulacije-bazirane-na-cesticama}
 
-    Simulacije bazirane na česticama su najintuitivnije.
-    Svaka čestica predstavlja jednu česticu vode, te sadrži njena svojstva poput mase, brzine i vektora smjera kretanja.
-    Kasnije se izračunavaju među-čestične sile poput tlaka i gustoće te se pomoću njih određuju nova svojstva čestica u
-    sljedećem koraku simulacije te se to ponavlja.
+    Simulacije bazirane na česticama su jedne od najintuitivnijih i najčešće korištenih metoda za simulaciju fluida.
+    U ovim metodama, svaka čestica predstavlja mali dio fluida, kao što je kapljica vode, te nosi svojstva kao što su masa, brzina i vektor smjera kretanja.
+    Ove simulacije omogućavaju vrlo detaljan i dinamičan prikaz tekućina.
 
-    Najpoznatije simulacije ovog tipa su SPH koje će biti obrađeno zasebno, te DEM - Metoda diskretnih elemenata.
+    \begin{itemize}
+        \item \textbf{Osnovni princip:} Svaka čestica ima svoje fizičke karakteristike koje se koriste za izračunavanje među-čestičnih sila poput tlaka, gustoće i viskoznosti. Na temelju tih sila, simulacija izračunava nova svojstva čestica za svaki korak simulacije. Ovaj proces se ponavlja iterativno, omogućujući simulaciji da prikaže dinamiku fluida kroz vrijeme.
+        \item \textbf{SPH (Smoothed Particle Hydrodynamics):} SPH je najpoznatija metoda simulacije fluida bazirana na česticama. U SPH metodi, interakcije između čestica se izračunavaju pomoću glatkih interpolacijskih funkcija koje omogućuju realističnu simulaciju fluida. SPH će biti detaljno obrađena u zasebnom poglavlju ovog rada.
+        \item \textbf{DEM\cite{DEMmethod} (Discrete Element Method):} DEM metoda se koristi za simulaciju granularnih materijala poput piljevine, pijeska i šljunka. Ova metoda uzima u obzir međučestične sile poput trenja i elastičnosti, te stavlja velik naglasak na primjenu Newtonovih zakona. DEM se najčešće koristi u rudarskom inženjerstvu, ali također ima primjene u farmaceutskoj industriji, gdje se koristi za simulaciju procesa kao što je miješanje praha.
+    \end{itemize}
 
-    DEM\cite{DEMmethod} metoda je većinski korištena za simulaciju građevinskog materijala poput piljevine ili pijeska.
-    Ona uzima u obzir međučestične sile poput trenja, elastičnosti, i stavlja velik naglasak na Newtonove zakone.
-    Najčešće se koristi u rudarskom inžinjerstvu, no postoje i primjene u farmaceutskoj industriji.
+    \subsection{Simulacije bazirane na 2D polju}\label{subsec:simulacije-bazirane-na-polju}
 
-    \newpage
-    \subsection{Simulacije bazirane na 2D polju}\label{subsec:simulacije-bazirane-na-2d-polju}
+    Simulacije bazirane na 2D polju koriste mrežu za reprezentaciju prostora fluida.
+    Umjesto čestica, svojstva fluida se pohranjuju u ćelijama ove mreže, što omogućava drugačiji pristup simulaciji.
 
-    Simulacije bazirane na 2D polju ne koriste čestice kao prijašnje metode, nego koriste 2D polje, u koje spremaju
-    svojstva čestica koje bi se nalazile u ćeliji tog polja.
-    One se kao i ostale simulacije izvode korak po korak.
-    Ako želimo veliku simulaciju, njena složenost raste kvadratno, pa ove simulacije nisu prigodne za velike površine,
-    baš zbog te velike računske složenosti.
+    \begin{itemize}
+        \item \textbf{Osnovni princip:} Prostor simulacije se dijeli na ćelije u 2D mreži.
+        Svaka ćelija pohranjuje informacije o fizikalnim svojstvima fluida kao što su brzina, tlak i gustoća.
+        Simulacija se odvija iterativno, pri čemu se fizikalni zakoni primjenjuju na svaku ćeliju kako bi se izračunala nova stanja za svaki korak simulacije.
+        \item \textbf{Primjena:} Ove simulacije se često koriste za modeliranje toka fluida u jednostavnim geometrijama i za simulacije gdje su granice jasno definirane.
+        Primjeri uključuju simulaciju strujanja zraka preko krila aviona ili simulaciju morskih struja u ograničenim područjima.
+        \item \textbf{Ograničenja:} Jedan od glavnih nedostataka simulacija baziranih na 2D polju je njihova računalna složenost.
+        Kako se veličina mreže povećava, broj ćelija raste kvadratno, što značajno povećava potrebne računalne resurse.
+        Zbog toga, ove metode nisu uvijek prikladne za simulacije velikih površina ili kompleksnih tokova.
+        \item \textbf{Prednosti:} Unatoč ograničenjima, simulacije bazirane na 2D polju mogu pružiti vrlo precizne rezultate za specifične probleme.
+        Mogu biti efikasnije od metoda baziranih na česticama za simulacije gdje su detalji pojedinačnih čestica manje važni od ukupnog toka fluida.
+    \end{itemize}
 
     \begin{figure}[H]
         \centering
@@ -125,16 +155,28 @@
         \label{fig:gridBasedParticleBased}
     \end{figure}
 
+
     \section{SPH metoda}\label{sec:sph-metoda}
 
     \subsection{Općenito o metodi}\label{subsec:opcenito-o-metodi}
 
-    SPH\cite{SPHmethod} metoda je računska metoda koja se koristi za simulaciju fluida.
-    Ona je simulacija bazirana na česticama, te njihova svojstva koristi za računanje istih iz koraka u korak.
-    Ona ne zahtjeva 2D polje, što je velika prednost, jer može simulirati fluid u složenim i nepravilnim prostorima.
-    Njena složenost gledana s obzirom na broj čestica je puno manja nego složenost simulacija koje koriste 2D polje kada je gustoća jednaka.
+    SPH\cite{SPHmethod} (Smoothed Particle Hydrodynamics) metoda je računska metoda koja se koristi za simulaciju fluida.
+    Ova metoda je bazirana na česticama, pri čemu svaka čestica predstavlja mali volumen fluida.
+    SPH metoda izračunava fizikalna svojstva fluida na temelju međučestičnih interakcija, omogućujući simulaciju fluida u složenim i nepravilnim prostorima bez potrebe za 2D poljem.
+
+    \begin{itemize}
+        \item \textbf{Osnovni princip:} U SPH metodi, prostor se ne dijeli na ćelije kao u metodama baziranim na mreži, već se koristi diskretna kolekcija čestica.
+        Svaka čestica nosi informacije o fizikalnim svojstvima kao što su masa, brzina, gustoća i tlak.
+        Interakcije između čestica izračunavaju se pomoću glatkih interpolacijskih funkcija, što omogućava kontinuirani prikaz fizikalnih veličina.
+        \item \textbf{Prednosti:} Jedna od glavnih prednosti SPH metode je njena sposobnost da simulira fluide u složenim geometrijama i nepravilnim prostorima.
+        Budući da ne koristi 2D polje, SPH metoda je fleksibilnija i može se lako prilagoditi različitim vrstama problema.
+        Također, njena složenost u odnosu na broj čestica je manja nego kod metoda koje koriste 2D polje, posebno kada je gustoća čestica visoka.
+        \item \textbf{Nedostaci:} Glavni nedostatak SPH metode je potreba za velikim brojem čestica kako bi se postigla visoka preciznost simulacije, što može povećati računalne zahtjeve.
+        Također, postizanje stabilnosti simulacije može biti izazovno, posebno kod simulacije viskoznih i turbulentnih tokova.
+    \end{itemize}
 
     \newpage
+
     \subsection{Koraci simulacije}\label{subsec:koraci-simulacije}
 
     \paragraphnewline{Inicijalizacija simulacije}
@@ -187,6 +229,7 @@
         \label{fig:pressureForce}
     \end{figure}
 
+    \newpage
     Viskoza je suprotna pritisku, ona želi držati čestice na okupu tako da vuće čestice jedne prema drugima kako bi se micale u jednoj velikoj nakupini.
     Što je viskoza jača, fluid koji simuliramo bit će ``tvrđi`` i sve više ličiti na neku krutinu, jer će unutarnja sila biti toliko jaka da će se vanjske sile
     poput gravitacije moći zanemariti.
@@ -200,19 +243,31 @@
     \end{figure}
 
 
-
     % TODO dodat slike tih sila
     \paragraphnewline{Upravljanje rubnim uvjetima i sudarima}
 
 
     \chapter{Programska implementacija}\label{ch:programska-implementacija}
 
+
     \section{Osnove Unity okruženja}\label{sec:osnove-unity-okruzenja}
+
+
     \section{Osnove Unity fizičkog simulatora}\label{sec:osnove-unity-fizickog-simulatora}
+
+
     \section{Čestica}\label{sec:cestica}
+
+
     \section{Gustoća}\label{sec:gustoca}
+
+
     \section{Pritisak}\label{sec:pritisak}
+
+
     \section{Viskoza}\label{sec:viskoza}
+
+
     \section{Rezultantna sila}\label{sec:rezultantna-sila}
 
 
