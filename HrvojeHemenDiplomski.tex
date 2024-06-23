@@ -227,7 +227,7 @@
     Čestice ne smiju biti unutar jedne druge, ali se svejedno moraju kretati zajedno, a skupina čestica mora se ponašati kao kohezivna jedinica.
     Najbitnije sile u ovoj fazi su sile pritiska i sile viskoznosti.
 
-    Prvo se računa gustoća, a zatim pomoću nje pritisak i onda nakon viskoza.
+    Prvo se računa gustoća, a zatim pomoću nje pritisak i onda nakon viskoznost.
 
     Pritisak je bitan jer on tjera čestice jedne iz drugih kako nebi zapele jedna u drugu.
     \begin{figure}[H]
@@ -291,6 +291,7 @@
     U ovom poglavlju detaljno će biti opisani programske koraci implementacije SPH simulacije fluida koristeći Unity i C\#.
     Fokus će biti na osnovama Unity okruženja i Unity fizičkog simulatora, što će omogućiti razumijevanje integracije SPH metode u Unity okruženje.
 
+
     \section{Osnove Unity okruženja}\label{sec:osnove-unity-okruzenja}
 
     Unity je moćan razvojni alat koji omogućava stvaranje igara i simulacija u 2D, 2.5D i 3D okruženjima. Njegova fleksibilnost i pristupačnost čine ga idealnim izborom za razvoj složenih fizikalnih simulacija kao što je SPH metoda za simulaciju fluida.
@@ -334,6 +335,7 @@
         \item \textbf{Upravljanje komponentama:} Skripte mogu dodavati, uklanjati i mijenjati komponente GameObjecta, omogućavajući dinamičko ponašanje tijekom igre.
     \end{itemize}
 
+
     \section{Osnove Unity fizičkog simulatora}\label{sec:osnove-unity-fizickog-simulatora}
 
     Unity fizički simulator omogućava realističnu simulaciju fizikalnih interakcija među objektima.
@@ -376,20 +378,121 @@
 
     Ove osnove Unity okruženja i fizičkog simulatora postavljaju temelje za razumijevanje kako implementirati kompleksne fizikalne simulacije poput SPH metode. Daljnji koraci uključuju detaljnu implementaciju svakog od ovih aspekata kako bi se postigla realistična simulacija fluida.
 
+
     \section{Čestica}\label{sec:cestica}
+
+    Klasa \texttt{Particle} sadrži sve potrebne atribute i metode za simulaciju ponašanja čestica fluida.
+    Klasa se temelji na Unityjevom \texttt{MonoBehaviour} sustavu što omogućava lako povezivanje sa Unity komponentama i metodama životnog ciklusa.
+
+    Klasa sadrži mnogo klasnih varijabli, no ovo su najbitnije
+
+    \begin{itemize}
+        \item \textbf{float radius:} radijus čestice, ne želimo pre velike čestice jer će simulacija vode izgledati heterogeno, ali ne želimo ni premalene, jer će biti ili pre malo fluida,
+        ili će simulacija biti spora zbog prevelikog simulacijskog napora
+        \item \textbf{Vector2 position:} Pozicija čestice prikazana pomoću Unityjeve klase Vector2, ovime spremamo x i y poziciju čestice na sceni, Vector2 klasa dodatno omogućava lako računanje
+        s drugim vektorima te znatno olakšava rad nad vektorima umjesto nad dvije varijable x i y.
+        \item \textbf{Vector2 previousPosition:} Neke računice gledaju i prošlu poziciju neke čestice pa je bitno spremiti i prošlu poziciju radi toga
+        \item \textbf{Vector2 velocityVector:} U ovu varijablu spremamo smjer i iznos brzine kretanja svake čestice
+        \item \textbf{int gridX, gridY:} U ove varijable sprema se pozicija čestice unutar simulacijske mreže radi brzog traženja susjeda
+    \end{itemize}
 
 
     \section{Gustoća}\label{sec:gustoca}
 
+    Gustoća je ključni parametar u SPH simulaciji fluida, jer na temelju nje izračunavamo druge važne fizikalne veličine kao što su pritisak i viskoznost.
+    Ovdje ćemo opisati metodu \texttt{ApplyDensity} koja se koristi za izračunavanje gustoće svake čestice u simulaciji.
+
+    Metoda \texttt{ApplyDensity} prolazi kroz sve čestice u simulaciji i za svaku česticu izračunava gustoću i susjednu gustoću na temelju udaljenosti od susjednih čestica.
+    Susjedna gustoća jače drži na okupu one čestice koje su već blizu.
+    Također, ova metoda identificira susjedne čestice i pohranjuje ih u listu susjeda čestice.
+
+
+
+    \begin{itemize}
+        \item \textbf{Prolazak kroz čestice:} Metoda započinje prolaskom kroz sve čestice u simulaciji pomoću \texttt{foreach} petlje.
+        Svaka čestica (\texttt{particle}) prolazi kroz proces izračuna gustoće jednom po koraku simulacije.
+
+        \item \textbf{Prolazak kroz ćelije mreže:} Za svaku česticu, metoda prolazi kroz sve ćelije u mreži koje okružuju trenutnu ćeliju čestice.
+        Ovo se postiže dvostrukom \texttt{for} petljom koja prolazi kroz ćelije unutar radijusa od 1 ćelije od trenutne pozicije čestice (\texttt{gridX} i \texttt{gridY}).
+
+        \item \textbf{Provjera granica mreže:} Prvi korak u tim petljama je provjera jesu li indeksi ćelija unutar granica mreže.
+        Ovo osigurava da metoda ne pokušava pristupiti ćelijama koje su izvan granica definirane mreže (\texttt{xGridSize} i \texttt{yGridSize}).
+
+        \item \textbf{Prolazak kroz čestice unutar ćelije:} Za svaku ćeliju unutar granica simulacije metoda će uzeti sve čestice u njima te napraviti provjeru sa trenutnom.
+        Ako je čestica (\texttt{particle2}) ista kao i trenutna čestica (\texttt{particle}), preskače se daljnja obrada za tu česticu.
+
+        \item \textbf{Izračun udaljenosti:} Metoda izračunava udaljenost između trenutne čestice i svake čestice u susjednim ćelijama pomoću metode \texttt{Vector2.Distance}.
+
+        \item \textbf{Provjera radijusa:} Ako je udaljenost između čestica manja od predodređenog radijusa (\texttt{Config.R}), tada se čestica smatra susjedom.
+
+        \item \textbf{Izračun normalizirane udaljenosti:} Normalizirana udaljenost se izračunava oduzimanjem omjera stvarne udaljenosti i radijusa od 1.
+        Ovaj omjer se koristi za izračunavanje gustoće.
+
+        \item \textbf{Ažuriranje gustoće:} Gustoća (\texttt{rho}) se povećava za kvadrat normalizirane udaljenosti, dok se susjedna gustoća (\texttt{rhoNear}) povećava za kub normalizirane udaljenosti.
+        Ove vrijednosti se koriste za izračun pritiska u kasnijim koracima simulacije.
+
+        \item \textbf{Dodavanje susjeda:} Čestica koja je unutar radijusa se dodaje u listu susjeda trenutne čestice (\texttt{neighbours}). Ova lista će se koristiti za daljnje proračune sila između susjednih čestica.
+    \end{itemize}
+
+    Metoda \texttt{ApplyDensity} je ključna za pravilno funkcioniranje SPH simulacije.
+    Točan izračun gustoće i susjedne gustoće omogućava pravilno modeliranje međučestičnih sila, što rezultira realističnim simulacijama tekućina.
+    Identifikacija susjednih čestica i izračun njihovih doprinosa gustoći osigurava da svaka čestica ispravno reagira na svoje okruženje, omogućujući tekućini da teče i ponaša se kao stvarna tekućina.
 
     \section{Pritisak}\label{sec:pritisak}
 
+    Pritisak je ključan faktor u SPH simulacijama fluida, jer omogućava česticama da se međusobno odbijaju i održavaju strukturu tekućine.
+    Ovdje ćemo opisati metodu \texttt{ApplyPressure} koje se koriste za izračunavanje i primjenu pritiska među česticama.
 
-    \section{Viskoza}\label{sec:viskoza}
+    \begin{itemize}
+        \item \textbf{Prolazak kroz čestice:} Metoda započinje prolaskom kroz sve čestice u simulaciji pomoću \texttt{foreach} petlje.
+        Za svaku česticu, izračunava se ukupna sila pritiska koja djeluje na nju.
 
+        \item \textbf{Prolazak kroz susjede:} Unutar svake čestice, metoda prolazi kroz sve susjedne čestice pohranjene u listi \texttt{neighbours}.
+        Ovo omogućava izračun međusobnih sila između susjednih čestica.
 
-    \section{Rezultantna sila}\label{sec:rezultantna-sila}
+        \item \textbf{Izračun vektora razlike:} Vektor razlike između pozicija trenutne čestice i susjedne čestice izračunava se kako bi se dobio smjer sile pritiska.
 
+        \item \textbf{Izračun udaljenosti:} Udaljenost između trenutne čestice i susjedne čestice izračunava se pomoću metode \texttt{Vector2.Distance}.
+        Ova udaljenost koristi se za normalizaciju sile pritiska.
+
+        \item \textbf{Normalizirana udaljenost:} Normalizirana udaljenost izračunava se oduzimanjem omjera stvarne udaljenosti i radijusa od 1.
+        Ova normalizirana udaljenost koristi se za skaliranje sile pritiska.
+
+        \item \textbf{Izračun ukupnog pritiska:} Ukupni pritisak izračunava se kao zbroj pritiska trenutne čestice i susjedne čestice, pomnožen sa kvadratom normalizirane udaljenosti, te zbroj susjednog pritiska trenutne i susjedne čestice, pomnožen sa kubom normalizirane udaljenosti.
+
+        \item \textbf{Vektor sile pritiska:} Vektor sile pritiska izračunava se množenjem ukupnog pritiska i normaliziranog vektora razlike pozicija čestica.
+        Ova sila dodaje se sili susjedne čestice i oduzima od sile trenutne čestice (\texttt{particle.force}).
+
+        \item \textbf{Ažuriranje sile:} Nakon prolaska kroz sve susjedne čestice, ukupna sila pritiska oduzima se od sile trenutne čestice, osiguravajući da sila pritiska djeluje u ispravnom smjeru.
+    \end{itemize}
+
+    \section{Viskoznost}\label{sec:viskoznost}
+
+    Viskoznost je važan faktor u SPH simulacijama fluida, jer doprinosi unutarnjem trenju tekućine, omogućujući česticama da se kreću zajedno kao zajednička masa.
+
+    \begin{itemize}
+        \item \textbf{Prolazak kroz susjede:} Unutar svake čestice, metoda prolazi kroz sve susjedne čestice pohranjene u listi \texttt{neighbours}.
+        Ovo omogućava izračun međusobnih sila viskoznosti između susjednih čestica.
+
+        \item \textbf{Izračun vektora razlike:} Vektor razlike između pozicija trenutne čestice i susjedne čestice izračunava se kako bi se dobio smjer sile viskoznosti.
+
+        \item \textbf{Izračun udaljenosti:} Udaljenost između trenutne čestice i susjedne čestice izračunava se pomoću metode \texttt{Vector2.Distance}.
+        Ova udaljenost koristi se za normalizaciju sile viskoznosti.
+
+        \item \textbf{Normalizacija vektora:} Vektor razlike se normalizira kako bi se dobio jedinični vektor smjera.
+
+        \item \textbf{Izračun relativne udaljenosti:} Relativna udaljenost izračunava se kao omjer stvarne udaljenosti i radijusa.
+
+        \item \textbf{Izračun razlike brzine:} Razlika brzine između trenutne čestice i susjedne čestice izračunava se kao skalarni produkt razlike brzine (\texttt{particle.velocityVector - particleNeighbour.velocityVector}) i normaliziranog vektora smjera.
+        Ovo daje komponentu razlike brzine duž smjera vektora razlike pozicija.
+
+        \item \textbf{Primjena viskoznosti:} Ako je razlika brzine pozitivna (čestica se kreće prema susjednoj čestici), izračunava se sila viskoznosti.
+        Sila viskoznosti je proporcionalna normaliziranoj udaljenosti, razlici brzine i konstanti viskoznosti.
+        Ova sila primjenjuje se na brzine trenutne čestice i susjedne čestice, smanjujući razliku u njihovim brzinama i simulirajući učinak unutarnjeg trenja.
+
+        \item \textbf{Ažuriranje brzina:} Brzina trenutne čestice smanjuje se za polovicu izračunate sile viskoznosti, dok se brzina susjedne čestice povećava za istu vrijednost.
+        Ovaj simetrični pristup osigurava da se ukupna količina gibanja sačuva, a čestice se približavaju zajedničkoj brzini.
+    \end{itemize}
 
     \bibliography{literatura}
     \begin{sazetak}
