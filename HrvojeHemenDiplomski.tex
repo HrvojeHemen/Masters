@@ -18,7 +18,7 @@
     \maketitle
     \zadatak{HrvojeHemenZadatak.pdf}
     \begin{zahvale}
-        Želim se zahvaliti mentoru Krešimiru Trontlu-
+        Želim se zahvaliti mentoru Krešimiru Trontlu na ljubaznosti i pomoći tijekom studija.
     \end{zahvale}
     \mainmatter
     \tableofcontents
@@ -276,6 +276,11 @@
         \begin{itemize}
             \item \textit{Phantom particles (fantomske čestice):} Ova metoda uključuje postavljanje dodatnih čestica duž granica čvrstih objekata. Fantomske čestice služe za simulaciju sile odbijanja, osiguravajući da čestice fluida ne prodiru kroz granice.
             \item \textit{Boundary handling (upravljanje granicama):} Ova metoda koristi posebne algoritme za detekciju i odgovor na sudare čestica fluida s granicama simulacijskog prostora. Na primjer, može se koristiti refleksija brzina kako bi se simulirao odbijanje fluida od zidova.
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=0.3]{images/dampening}
+                \label{fig:dampening}
+            \end{figure}
             \item \textit{Friction and adhesion (trenje i adhezija):} Ove sile igraju važnu ulogu u simulaciji interakcija između fluida i čvrstih površina. Trenje može smanjiti brzinu fluida pri kontaktu sa zidom, dok adhezija može uzrokovati da fluid ``prianja`` uz površine, što je važno za simulaciju efekata poput mokrih površina.
         \end{itemize}
 
@@ -319,6 +324,7 @@
     \begin{itemize}
         \item \textbf{Transform:} Svaki GameObject ima komponentu Transform koja pohranjuje informacije o poziciji, rotaciji i skali objekta.
         \item \textbf{Rigidbody:} Komponenta koja omogućava fizičku simulaciju objekta, uključujući gravitaciju, sile i sudare.
+        U ovom radu Rigidbody bio je korišten radi detekcije sudara, svi parametri postavljeni su na 0 kako bi se zanemario Unity fizički simulator.
         \item \textbf{Collider:} Komponenta koja definira oblik objekta za detekciju sudara.
         Postoje različite vrste collidera, uključujući Box Collider, Sphere Collider i Mesh Collider, ovisno o objektu na koji stavljamo collider taj tip ćemo koristiti.
         \item \textbf{Script:} Komponente koje dodaju prilagođeno ponašanje objektima koristeći C\# skripte.
@@ -343,6 +349,13 @@
 
     \subsection{Rigidbody komponenta}\label{subsec:rigidbody-komponenta}
     Rigidbody komponenta dodaje fizikalna svojstva GameObjectu, omogućavajući mu da reagira na gravitaciju, sile i sudare.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/rigidBody}
+        \label{fig:rigidBody}
+    \end{figure}
+
     Ključne postavke Rigidbody komponente uključuju:
     \begin{itemize}
         \item \textbf{Mass:} Masa objekta koja utječe na to kako se objekt ponaša pod utjecajem sila.
@@ -354,6 +367,13 @@
 
     \subsection{Collider komponenta}\label{subsec:collider-komponenta}
     Collider komponenta definira oblik objekta za detekciju sudara.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/circleCollider}
+        \label{fig:circleCollider}
+    \end{figure}
+
     Postoji nekoliko vrsta collidera koje ćemo koristiti ovisno o izgledu objekta ili slučaja korištenja u kojem se nalazimo:
     \begin{itemize}
         \item \textbf{Box Collider:} Pravokutni collider koji definira objekt kao kutiju, Kutija u nekoj igri.
@@ -494,17 +514,80 @@
         Ovaj simetrični pristup osigurava da se ukupna količina gibanja sačuva, a čestice se približavaju zajedničkoj brzini.
     \end{itemize}
 
+    \section{Postavljanje čestica na nove pozicije}\label{sec:postavljanje}
+    Pozicije čestica se ažuriraju na temelju izračunatih sila i trenutnih brzina.
+    Ovaj korak koristi metodu \texttt{MovePosition}, jer ona poštuje collidere i neće česticu pomaknuti kroz druge ili kroz neki zid.
+
+    \section{Vizualizacija čestica}\label{sec:vizualizacija-cestica}
+    U simulaciji, čestice su vizualizirane kao krugovi.
+    Svaka čestica je najviše obojena u centru, dok boja postepeno blijedi prema rubovima.
+    Ova tehnika vizualizacije omogućava lakše praćenje ponašanja tekućine i interakcija između čestica, a u isto vrijeme sakriva same čestice te to više nalikuje jedinstvenoj masi.
+
+    \chapter{Primjeri}\label{pog:primjeri}
+
+    Prvi primjer simulacije je primjer u kojem gravitacija gura fluid s jedne strane na drugu i na kraju se oni izjednače na istu visinu.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/prijeIzjednacenja}
+        \label{fig:prije}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/poslijeIzjednacenja}
+        \label{fig:poslije}
+    \end{figure}
+
+    \pagebreak
+    Drugi primjer simulacije je primjer u kojemu pritisak vode i gravitacija koja djeluje na nju gura čestice vode van
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/pritisakGuraVodu}
+        \label{fig:pritisak}
+    \end{figure}
+
+    Treći primjer pokazuje kako će gravitacija vuči čestice nizbrdo i preko prepreka koje mogu preći a neke od njih će zapesti.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{images/gravitacija}
+        \label{fig:gravitacija}
+    \end{figure}
+
+
+    \chapter{Zaključak}\label{pog:zakljucak}
+
+    Cilj ovog rada bio je implementirati SPH metodu za simulaciju fluida koristeći Unity i C#. SPH metoda koristi čestice za simulaciju dinamike tekućina, omogućavajući realističnu simulaciju međučestičnih sila poput pritiska i viskoznosti.
+
+    Najvažniji aspekt bio je omogućiti precizne proračune međučestičnih sila i pravilno ažuriranje pozicija čestica kroz iterativni proces simulacije.
+    Unity okruženje pružilo je fleksibilnost i moćne alate za vizualizaciju, dok je C# omogućio efikasnu implementaciju algoritama potrebnih za simulaciju.
+
+    Za traženje susjeda i optimizaciju simulacije korištene su tehnike poput uniformne mreže, što je značajno smanjilo računalne zahtjeve i omogućilo brže izvođenje simulacija.
+    Vizualizacija čestica kao krugova s intenzivnom bojom u centru omogućila je stvaranje dojma kohezivne tekućine, čineći simulacije vizualno uvjerljivima.
+
+    Pisanje koda u C# jeziku unutar Unity okruženja bilo je olakšano naprednim alatima za razvoj, što je omogućilo brže otkrivanje i ispravljanje grešaka te bržu implementaciju novih funkcionalnosti.
+
+    Ispunjeni su svi ciljevi rada koji su postavljeni prije početka, uključujući realistično modeliranje dinamike fluida i učinkovitu integraciju SPH metode u Unity.
+    Postoje dodatne mogućnosti za nadogradnju aplikacije, kao što su optimizacija algoritama za još brže izvođenje simulacija i poboljšanje vizualizacije čestica za još realističnije prikaze tekućina.
+
+
     \bibliography{literatura}
     \begin{sazetak}
-        sažetak na hrvatskom
+        Cilj ovog diplomskog rada bio je pomoću metode zaglađene čestice natjerati mnoštvo čestica da se ponašaju poput tekućine.
+        Ovo je postignuto sa ključnim silama koje utječu na te čestice, gravitacija, viskoznost, pritisak.
+        Simulacija se ponaša nalik vode, ali mijenjajući parametre lako se napravi ponašanje nalik medu i drugim tekućinama.
     \end{sazetak}
     \begin{kljucnerijeci}
-        ključne riječi na hrvatskom
+        SPH;Unity;simulacija;C\#;animacija
     \end{kljucnerijeci}
     \begin{abstract}
-        abstract in English
+        The aim of this thesis was to use the Smoothed Particle Hydrodynamics (SPH) method to make a multitude of particles behave like a fluid.
+        This was achieved through the application of key forces affecting these particles: gravity, viscosity, and pressure.
+        The simulation behaves similarly to water, but by adjusting the parameters, it can easily mimic the behavior of honey and other fluids.
     \end{abstract}
     \begin{keywords}
-        keywords in English
+        SPH;Unity;simulation;C\#;animation
     \end{keywords}
 \end{document}
